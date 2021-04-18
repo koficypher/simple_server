@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/koficypher/simple_server/database"
 	transport "github.com/koficypher/simple_server/router"
 )
 
@@ -13,6 +14,14 @@ type App struct{}
 // Run method starts up our server
 func (app *App) Run() error {
 	fmt.Println("Starting up our server.....")
+
+	var err error
+
+	_, err = database.NewDatabase()
+
+	if err != nil {
+		return err
+	}
 
 	handler := transport.NewHandler()
 	handler.SetupRoutes()

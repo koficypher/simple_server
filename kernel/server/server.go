@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"fmt"
@@ -17,14 +17,26 @@ func (app *App) Run() error {
 
 	var err error
 
-	_, err = database.NewDatabase()
+	DB, err := database.NewDatabase()
 
 	if err != nil {
 		return err
 	}
 
+	// err = database.MigrateModels(DB)
+
+	// if err != nil {
+	// 	return err
+	// }
+
+	// err = database.RunSeeder(DB)
+
+	// if err != nil {
+	// 	return err
+	// }
+
 	handler := transport.NewHandler()
-	handler.SetupRoutes()
+	handler.SetupRoutes(DB)
 	if err := http.ListenAndServe(":8080", handler.Router); err != nil {
 		fmt.Println("Failed to initialize server")
 
@@ -32,13 +44,4 @@ func (app *App) Run() error {
 	}
 
 	return nil
-}
-
-func main() {
-	app := App{}
-	if err := app.Run(); err != nil {
-		fmt.Println("Error starting up server....")
-		fmt.Println(err)
-	}
-
 }
